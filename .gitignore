@@ -1,4 +1,23 @@
 .env
+venv/
+__pycache__/
+*.pyc
+.env
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+Fertilizer Reccommedation/venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
 
 # echo "# Smart_Famer_App" >> README.md
 # git init
