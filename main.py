@@ -39,6 +39,10 @@ model = joblib.load("crop_model.pkl")
 crop_model = joblib.load("./Fertilizer Reccommedation/models/crop_model.pkl")
 fert_model = joblib.load("./Fertilizer Reccommedation/models/fert_model.pkl")
 
+# Load model and encoder
+soil_model = joblib.load("./Soil Type Prediction/soil_model.pkl")
+lesoil_type = joblib.load("./Soil Type Prediction/soil_type_encoder.pkl")
+
 # Load encoders
 le_crop = joblib.load("./Fertilizer Reccommedation/models/crop_encoder.pkl")
 le_fert = joblib.load("./Fertilizer Reccommedation/models/fert_encoder.pkl")
@@ -64,6 +68,7 @@ def predict(data: dict):
     prediction = model.predict(sample)
     
     return {"crop": prediction[0]}
+
 @app.post("/predicts")
 def predict(data: dict):
 
@@ -97,3 +102,29 @@ def predict(data: dict):
         "crop": crop_name,
         "fertilizer": fert_name
     }
+  
+    
+@app.post("/predict-soil")
+def predict_soil(
+    pH: float,
+    EC: float,
+    Organic_Carbon: float,
+    Nitrogen: int,
+    Phosphorus: int,
+    Potassium: int,
+    Moisture: float,
+    Temperature: float,
+    Soil_Quality: int
+):
+
+    sample = pd.DataFrame([[pH,EC,Organic_Carbon,Nitrogen,Phosphorus,Potassium,Moisture,Temperature,Soil_Quality]],
+                          columns=[
+                              "pH","EC","Organic_Carbon","Nitrogen","Phosphorus",
+                              "Potassium","Moisture","Temperature","Soil_Quality"
+                          ])
+
+    soil_pred = soil_model.predict(sample)
+
+    soil_name = str(lesoil_type.classes_[int(soil_pred[0])])
+
+    return {"Predicted Soil": soil_name}
